@@ -1,0 +1,48 @@
+{
+	"name": "stagnate",
+	"version": "1.0.0",
+	"description": "non-reactive react",
+	"main": "lib/index.js",
+	"files": [
+		"lib/*"
+	],
+	"directories": {
+		"lib": "lib"
+	},
+	"exports": {
+		".": "./lib/index.js",
+		"./jsx-runtime": "./lib/jsx-runtime.js"
+	},
+	"typesVersions": {
+		"*": {
+			"*": ["./lib/*", "./lib/index.d.js"]
+		}
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/md5crypt/stagnate.git"
+	},
+	"scripts": {
+		"build": "tsc",
+		"start": "tsc --watch"
+	},
+	"author": "Marek Korzeniowski",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/md5crypt/stagnate/issues"
+	},
+	"homepage": "https://github.com/md5crypt/stagnate#readme",
+	"keywords": [
+		"jsx",
+		"react",
+		"template"
+	],
+	"sideEffects": false,
+	"devDependencies": {
+		"@types/node": "^18.7.15",
+		"@typescript-eslint/eslint-plugin": "^5.36.2",
+		"@typescript-eslint/parser": "^5.36.2",
+		"eslint": "^8.23.0",
+		"typescript": "^4.8.2"
+	}
+}
