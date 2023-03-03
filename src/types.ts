@@ -52,7 +52,7 @@ export interface GlobalAttributes<T> extends Partial<EvenHandlers> {
 	class?: CollectableValue<(string | false | null | undefined)>
 	style?: Partial<CSSStyleDeclaration>
 	title?: string
-	tabIndex?: string
+	tabIndex?: number
 	innerHTML?: string
 }
 
@@ -82,7 +82,7 @@ export interface AnchorElementAttributes extends GlobalAttributes<HTMLAnchorElem
 }
 
 export interface InputElementAttributes extends GlobalAttributes<HTMLInputElement> {
-	type?: "button" | "checkbox" | "checkbox" | "hidden" | "password" | "radio" | "text"
+	type?: "button" | "checkbox" | "checkbox" | "hidden" | "password" | "radio" | "text" | "file"
 	alt?: string
 	checked?: boolean
 	disabled?: boolean
@@ -92,6 +92,8 @@ export interface InputElementAttributes extends GlobalAttributes<HTMLInputElemen
 	placeholder?: string
 	readonly?: boolean
 	value?: string
+	accept?: string
+	multiple?: boolean
 }
 
 export interface TextAreaElementAttributes extends GlobalAttributes<HTMLTextAreaElement> {
@@ -113,6 +115,7 @@ export interface SelectElementAttributes extends GlobalAttributes<HTMLSelectElem
 	disabled?: boolean
 	name?: string
 	children?: CollectableValue<JSX.Element | string>
+	value?: string
 }
 
 export interface OptionElementAttributes extends GlobalAttributes<HTMLOptionElement> {
@@ -184,3 +187,6 @@ export type ComponentProps<T extends keyof JSX.IntrinsicElements | {props: any} 
 	T extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[T] :
 		(T extends {props: any} ? T["props"] :
 			(T extends (props: any) => any ? Parameters<T>[0] : never))
+
+export type StagnateNode = CollectableValue<JSX.Element | string>
+export type ClassAttribute = CollectableValue<(string | false | null | undefined)>

@@ -1,5 +1,5 @@
 export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | HTMLElement = SVGElement | HTMLElement > {
-	public readonly props: undefined extends PROPS ? {} : PROPS & {ref?: (value: never) => void}
+	public readonly props: PROPS extends undefined ? {} : PROPS
 
 	private _components: Component<any, any, any>[]
 	private _attached: boolean
@@ -7,7 +7,8 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 	protected parent!: Component<any, any>
 	protected refs: REFS
 
-	public constructor(...props: undefined extends PROPS ? [] : [PROPS])
+	public constructor(...props: PROPS extends undefined ? [] : [never])
+	public constructor(props: PROPS)
 	public constructor(props?: any) {
 		this._components = []
 		this._attached = false
