@@ -51,8 +51,15 @@ export function jsx(type: any, props: any) {
 				Object.assign((element as HTMLElement).style, props.style)
 			} else {
 				const value = props[key]
-				if (value || value == "") {
-					element.setAttribute(key == "viewBox" ? key : key.toLowerCase(), value)
+				const attribute = key == "viewBox" ? key : key.toLowerCase()
+				if (value === true) {
+					element.setAttribute(attribute, "")
+				} else if (value === false || value === null) {
+					element.removeAttribute(attribute)
+				} else if (typeof value == "string") {
+					element.setAttribute(attribute, value)
+				} else if (value !== undefined) {
+					element.setAttribute(attribute, value.toString())
 				}
 			}
 		}
