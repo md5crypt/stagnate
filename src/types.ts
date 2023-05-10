@@ -54,6 +54,21 @@ export interface GlobalAttributes<T> extends Partial<EvenHandlers> {
 	title?: string
 	tabIndex?: number
 	innerHTML?: string
+	accessKey?: "string"
+	autoCapitalize?: "off" | "none" | "on" | "sentences" | "words" | "characters"
+	autoFocus?: boolean
+	contentEditable?: boolean
+	dir?: "ltr" | "rtl" | "auto"
+	draggable?: boolean
+	enterKeyHint?: boolean
+	hidden?: boolean
+	inert?: boolean
+	inputMode?: "text" | "decimal" | "numeric" | "tel" | "search" | "email" | "url"
+	lang?: string
+	role?: string
+	spellcheck?: boolean | string
+	translate?: "" | "yes" | "no"
+	virtualKeyboardPolicy?: "auto" | "manual"
 }
 
 export interface HTMLElementAttributes<T> extends GlobalAttributes<T> {
