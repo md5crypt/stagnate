@@ -1,6 +1,6 @@
 {
 	"name": "stagnate",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "non-reactive react",
 	"main": "lib/index.js",
 	"files": [
