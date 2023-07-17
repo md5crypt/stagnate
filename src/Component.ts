@@ -20,8 +20,8 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 		return null
 	}
 
-	protected ref(key?: keyof REFS) {
-		return (x: any) => {
+	protected ref<T extends keyof REFS | undefined = undefined>(key?: T) {
+		return (x: REFS[NonNullable<T>] extends never ? any : REFS[NonNullable<T>]) => {
 			if (x instanceof Component) {
 				x.bind(this as Component<any, any, any>)
 			}
