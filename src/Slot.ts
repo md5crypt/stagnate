@@ -14,11 +14,16 @@ export function Slot(props: {name: string, children: StagnateNode}): JSX.Element
 }
 
 Slot.extract = function<T = Record<string, any>>(input: StagnateNode, slots: Record<string, any> = {}) {
-	if (Array.isArray(input)) {
+	if (input instanceof SlotArray && input.length) {
+		slots[input.name] = input[0]
+		input.pop()
+	} else if (Array.isArray(input)) {
 		for (let i = 0; i < input.length; i += 1) {
 			const item = input[i]
 			if (item instanceof SlotArray) {
-				slots[item.name] = item[0]
+				if (input.length) {
+					slots[item.name] = item[0]
+				}
 				input[i] = null
 			} else if (Array.isArray(item)) {
 				this.extract(item, slots)
