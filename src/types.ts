@@ -163,11 +163,6 @@ export interface SvgElementAttributes extends GlobalAttributes<SVGElement> {
 	children?: CollectableValue<JSX.Element | string>
 }
 
-export interface SvgPathElementAttributes extends GlobalAttributes<SVGPathElement> {
-	fill?: string
-	d?: string
-}
-
 export namespace JSX {
 	export interface IntrinsicElements {
 		text: TextElementAttributes
@@ -181,7 +176,7 @@ export namespace JSX {
 		option: OptionElementAttributes
 		iframe: IframeElementAttributes
 		svg: SvgElementAttributes
-		path: SvgPathElementAttributes
+		[key: `svg:${string}`]: GlobalAttributes<SVGElement> & Record<string, any>
 	}
 	export interface ElementChildrenAttribute {
 		children: {}

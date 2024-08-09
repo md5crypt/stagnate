@@ -31,8 +31,10 @@ export function jsx(type: any, props: any) {
 	} else if (typeof type == "string") {
 		const children = collect<Element | string>(props.children)
 		let element: Element
-		if (type == "svg" || type == "path") {
-			element = document.createElementNS("http://www.w3.org/2000/svg", type)
+		let isSvg = false
+		if (type.startsWith("svg")) {
+			element = document.createElementNS("http://www.w3.org/2000/svg", type.length == 3 ? "svg" : type.slice(4))
+			isSvg = true
 		} else {
 			element = document.createElement(type)
 		}
@@ -52,7 +54,7 @@ export function jsx(type: any, props: any) {
 				Object.assign((element as HTMLElement).style, props.style)
 			} else {
 				const value = props[key]
-				const attribute = key == "viewBox" ? key : key.toLowerCase()
+				const attribute = isSvg ? key : key.toLowerCase()
 				if (value === true) {
 					element.setAttribute(attribute, "")
 				} else if (value === false || value === null) {
