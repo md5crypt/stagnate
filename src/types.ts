@@ -12,6 +12,13 @@ export interface EvenHandlers {
 	onChange: (ev: Event) => void
 	onClick: (ev: MouseEvent) => void
 	onClose: (ev: Event) => void
+	onDrag: (ev: DragEvent) => void
+	onDragEnd: (ev: DragEvent) => void
+	onDragEnter: (ev: DragEvent) => void
+	onDragLeave: (ev: DragEvent) => void
+	onDragOver: (ev: DragEvent) => void
+	onDragStart: (ev: DragEvent) => void
+	onDrop: (ev: DragEvent) => void
 	onContextMenu: (ev: MouseEvent) => void
 	onDblClick: (ev: MouseEvent) => void
 	onFocus: (ev: FocusEvent) => void
@@ -49,7 +56,7 @@ export interface EvenHandlers {
 export interface GlobalAttributes<T> extends Partial<EvenHandlers> {
 	ref?: (value: T) => void
 	id?: string
-	class?: CollectableValue<(string | false | null | undefined)>
+	class?: CollectableValue<string>
 	style?: Partial<CSSStyleDeclaration>
 	title?: string
 	tabIndex?: number
@@ -193,10 +200,14 @@ export namespace JSX {
 	}
 }
 
+/** get props of an JSX element or component function / class */
 export type ComponentProps<T extends keyof JSX.IntrinsicElements | {props: any} | ((props: any) => any)> =
 	T extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[T] :
 		(T extends {props: any} ? T["props"] :
 			(T extends (props: any) => any ? Parameters<T>[0] : never))
 
+/** any value that can be used in JSX */
 export type StagnateNode = CollectableValue<JSX.Element | string>
-export type ClassAttribute = CollectableValue<(string | false | null | undefined)>
+
+/** the JSX element css class attribute */
+export type ClassAttribute = CollectableValue<string>

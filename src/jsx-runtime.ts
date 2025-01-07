@@ -1,3 +1,4 @@
+import { Component } from "./Component"
 import type { JSX, CollectableArray, StagnateNode } from "./types"
 
 function _collect<T>(data: CollectableArray<T>, accumulator: T[]) {
@@ -48,8 +49,13 @@ export function jsx(type: any, props: any) {
 			} else if (key == "ref") {
 				props.ref(element)
 			} else if (key == "class") {
-				const value = props.class
-				element.setAttribute("class", typeof value == "string" ? value : collect(value).join(" "))
+				let value = props.class
+				if (Array.isArray(value)) {
+					value = collect(value).join(" ")
+				}
+				if (value) {
+					element.setAttribute("class", value)
+				}
 			} else if (key == "style") {
 				Object.assign((element as HTMLElement).style, props.style)
 			} else {
@@ -68,9 +74,9 @@ export function jsx(type: any, props: any) {
 		}
 		children.forEach(x => element.appendChild(x instanceof Node ? x : document.createTextNode(x.toString())))
 		return element
-	} else if ("prototype" in type && type.prototype._jsx) {
-		const component = new type(props)
-		const element = component._jsx()
+	} else if (type.prototype instanceof Component) {
+		const component = new type(props) as Component
+		const element = component.build()
 		if (props.ref) {
 			props.ref(component)
 		}
@@ -89,6 +95,7 @@ export function createElement(type: any, props: any, ...children: any[]) {
 	return jsx(type, props)
 }
 
+/** JSX fragment component, <> can be used as an alias */
 export function Fragment(props: {children: StagnateNode}) {
 	return props.children as JSX.Element
 }

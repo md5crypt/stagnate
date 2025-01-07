@@ -174,58 +174,137 @@ Primary used to avoid passing nested JSX elements as props.
 
 ### Component class
 ```typescript
-declare class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | HTMLElement = SVGElement | HTMLElement> {
-	// props from JSX (set via constructor)
-	readonly props: PROPS extends undefined ? {} : PROPS
-	// HTML root element of this component (can be not set if not attached)
-	protected root: ROOT
-	// parent of this component (can be not set if not attached)
-	protected parent: Component<any, any>
-	// the refs object containing bound elements created during render
-	protected refs: REFS
-	// overcomplicated constructor signature made so props is optional only if component has no props defined
-	constructor(...props: PROPS extends undefined ? [] : [never])
-	// the render function, called to get the component root element, null can be returned if component
-	// has nothing to render but will result with exception if component is being created via create or replace
-	protected render(): Element | null
-	// the ref callback generation function with a overcomplicated signature, used to bind JSX elements to refs
-	protected ref<T extends keyof REFS | undefined = undefined>(key?: T): (x: REFS[NonNullable<T>] extends never ? any : REFS[NonNullable<T>]) => void
-	// create component and replace target element
-	replace(parent: Component<any, any>, target?: Element | Component<any, any> | null): void
-	// create component and insert to target
-	create(parent: Component<any, any>, target?: Element | Component<any, any> | null, before?: Element | Component<any, any> | number): void
-	// crate component as root (attached set on creation)
-	createOrphanized(target?: Element | null): void
-	// bind component to a already existing element (called internally on JSX ref binding)
-	bind(parent: Component<any, any>, target?: Element): void
-	// destroy component and it child components
-	destroy(): void
-	// check if component is attached
-	get attached(): boolean
-	// get the root element of this component
-	get htmlRoot(): ROOT;
-	// get and array of child components
-	protected get components(): Readonly<Component<any, any, any>[]>
-	// called before render is called
-	protected onBeforeRender(): void
-	// called after render is called
-	protected onRender(): void
-	// called when parent becomes attached (or on parent assignment if parent is attached)
-	protected onAttach(): void
-	// called when element is destroyed
-	protected onDetach(): void;
-}
+/**
+ * Stagnate Component class
+ *
+ * @typeParam REFS - interface describing jsx references stored on this component, see {@link Component.refs}
+ * @typeParam PROPS - interface describing jsx props passed to this component
+ * @typeParam ROOT - type of the html root element
+ */
+class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | HTMLElement = SVGElement | HTMLElement> {
+    /** properties received from jsx (or set via constructor) */
+    readonly props: PROPS extends undefined ? {} : PROPS
 
+    /** html root element, only accessible after {@link build} was called */
+    protected root: ROOT
+
+    /**
+     * parent component, only accessible after {@link bind} was called
+     * for self-bound components `this.parent = this`
+     */
+    protected parent: Component<any, any>
+
+    /**
+     * jsx references stored on this component,
+     * the REFS type should be set to a interface describing what references the component will use
+     * see {@link ref} for how to set references
+     */
+    protected refs: REFS
+
+    /**
+     * if component is to be used from jsx it has to have one constructor argument being the props,
+     * any other constructor signature will fail when used from jsx
+     */
+    constructor(props: PROPS)
+
+    /**
+     * component render function, should return the component JSX
+     * if null is returned {@link build} call will fail with an exception
+     */
+    protected render(): Element | null
+
+    /** called in {@link build} before render is called */
+    protected onBeforeRender(): void
+
+    /** called in {@link build} after render is called and root is set */
+    protected onRender(): void
+
+    /**
+     * called when component if fully attached (children are attached and `this.attached = true`),
+     * `onAttach` will be called only if the component is bound to a parent component or the component
+     * is self-bound
+     */
+    protected onAttach(): void
+
+    /**
+     * called when component if fully detached (children are detached and `this.attached = false`),
+     * `onDetach` will be called only if the component is bound to a parent component or it {@link destroy} was
+     * called on the component directly
+     */
+    protected onDetach(): void
+
+    /** function meant to be used in jsx for binding references */
+    protected ref<T extends keyof REFS | undefined = undefined>(key?: T): (x: REFS[NonNullable<T>] extends never ? any : REFS[NonNullable<T>]) => void
+
+    /**
+     * calls {@link render} and sets {@link root}
+     * @returns the created DOM element ({@link root})
+     */
+    build(): Element
+
+    /**
+     * add component to a parent component,
+     * attach component if parent component is attached
+     *
+     * a component can be self-bound by passing itself as parent (`x.bind(x)`),
+     * self-bound components get automatically attached
+     */
+    bind(parent: Component<any, any>): void
+
+    /**
+     * render the component, add it as a child of {@link parent} and insert it into DOM
+     *
+     * calls {@link build} and {@link bind} internally
+     *
+     * @param parent - parent component
+     * @param target - DOM element to add the component to, if unset or null `parent.root` is used, if a component is passed it's root will be used
+     * @param before - add the element before the given DOM child, a number can be used as a child index, if unset adds the element as the last child
+     */
+    create(parent: Component<any, any>, target?: Element | Component<any, any> | null, before?: Element | Component<any, any> | number): void
+
+    /**
+     * render the component, add it as a child of {@link parent} and add it to DOM by replacing a existing element or component
+     *
+     * calls {@link build} and {@link bind} internally
+     *
+     * @param parent - parent component
+     * @param target - component or DOM element to replace, if component is passed {@link destroy} will be called on it
+     */
+    replace(parent: Component<any, any>, target: Element | Component<any, any>): void
+
+    /**
+     * render the component, add it to DOM and self-bound, meant to be used for creating the root component
+     *
+     * calls {@link build} and {@link bind} internally
+     *
+     * @param target - DOM target to append the component to
+     */
+    createOrphanized(target: Node): void
+
+    /** remove this component from DOM and its parent component */
+    destroy(): void
+
+    /** true if component is attached */
+    get attached(): boolean
+
+    /** public accessor for {@link root} */
+    get htmlRoot(): ROOT
+
+    /** child component list accessor */
+    get components(): Readonly<Component<any, any, any>[]>
+}
 ```
 
 ### Utility Types
 
 ```typescript
-// get props of an JSX element or component function / class
+/** get props of an JSX element or component function / class */
 type ComponentProps<IntrinsicElement | ClassElement | FunctionElement>
-// anything that can be legally used in JSX
+
+/** any value that can be used in JSX */
 type StagnateNode
-// the JSX element css class attribute
+
+/** the JSX element css class attribute */
 type ClassAttribute
 ```
 
