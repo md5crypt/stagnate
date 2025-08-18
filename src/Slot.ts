@@ -1,4 +1,4 @@
-import { JSX, StagnateNode } from "./types"
+import type { JSX, StagnateNode } from "./types"
 
 class SlotArray extends Array<StagnateNode> {
 	public readonly name: string
@@ -47,7 +47,7 @@ export namespace Slot {
 			for (let i = 0; i < input.length; i += 1) {
 				const item = input[i]
 				if (item instanceof SlotArray) {
-					if (input.length) {
+					if (item.length) {
 						slots[item.name] = item[0]
 					}
 					input[i] = null

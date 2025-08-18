@@ -99,12 +99,10 @@ Same as `create` but replaces `target` instead of being appended to it.
 #### The `createOrphanized` member function
 
 ```typescript
-createOrphanized(target?: Element | null)
+createOrphanized(target?: Node)
 ```
 
 Same as `create` but intended to create the root component. The component is automatically set as attached after render.
-
-If `target` is `null` then component is appended to `document.body`.
 
 ## JSX attribute handling
 

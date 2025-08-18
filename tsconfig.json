@@ -5,7 +5,7 @@
 	"compilerOptions": {
 		"target": "ES2016",
 		"module": "ES2022",
-		"outDir": "./lib",
+		"outDir": "./dist",
 		"moduleResolution": "node",
 		"declaration": true,
 		"inlineSourceMap": false,
@@ -20,6 +20,7 @@
 		"noUnusedLocals": false,
 		"noUnusedParameters": false,
 		"noImplicitReturns": true,
-		"noFallthroughCasesInSwitch": true
+		"noFallthroughCasesInSwitch": true,
+		"verbatimModuleSyntax": true
 	}
 }

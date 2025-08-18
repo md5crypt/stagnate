@@ -32,8 +32,7 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 	 * if component is to be used from jsx it has to have one constructor argument being the props,
 	 * any other constructor signature will fail when used from jsx
 	 */
-	public constructor(...props: PROPS extends undefined ? [] : [never])
-	public constructor(props: PROPS)
+	public constructor(...props: PROPS extends undefined ? [] : [props: PROPS])
 	public constructor(props?: any) {
 		this._components = []
 		this._attached = false
@@ -56,6 +55,9 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 		this._components.forEach(x => x.detach())
 		this._components = []
 		this._attached = false
+		this.refs = {} as REFS
+		this.parent = null as any
+		this.root = null as any
 		this.onDetach()
 	}
 
@@ -174,7 +176,7 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 			target = target.root
 		}
 		if (typeof before === "number") {
-			before = target.children[Math.min(Math.max(0, before), target.children.length - 1)]!
+			before = before < target.children.length ? target.children[Math.max(0, before)] : undefined
 		} else if (before instanceof Component) {
 			before = before.root
 		}
@@ -214,8 +216,6 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 
 	/** remove this component from DOM and its parent component */
 	public destroy() {
-		this.detach()
-		this.refs = {} as REFS
 		if (this.root) {
 			this.root.remove()
 		}
@@ -225,8 +225,7 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 				this.parent._components.splice(index, 1)
 			}
 		}
-		this.parent = null as any
-		this.root = null as any
+		this.detach()
 	}
 
 	/** true if component is attached */

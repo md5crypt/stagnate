@@ -24,7 +24,7 @@ function collect<T>(data: CollectableArray<T> | T) {
 export function jsx(type: any, props: any) {
 	if (type == "text") {
 		const children = collect<string>(props.children)
-		const element = document.createTextNode(children.length ? children.join() : (props.value || ""))
+		const element = document.createTextNode(children.length ? children.join("") : (props.value || ""))
 		if (props.ref) {
 			props.ref(element)
 		}
@@ -40,16 +40,16 @@ export function jsx(type: any, props: any) {
 			element = document.createElement(type)
 		}
 		for (const key in props) {
-			if (key == "children") {
+			let value = props[key]
+			if (key == "children" || value === undefined) {
 				continue
 			} else if (key.startsWith("on")) {
-				element.addEventListener(key.slice(2).toLowerCase(), props[key])
+				element.addEventListener(key.slice(2).toLowerCase(), value)
 			} else if (key == "innerHTML") {
-				element.innerHTML = props.innerHTML
+				element.innerHTML = value
 			} else if (key == "ref") {
-				props.ref(element)
+				value(element)
 			} else if (key == "class") {
-				let value = props.class
 				if (Array.isArray(value)) {
 					value = collect(value).join(" ")
 				}
@@ -57,9 +57,8 @@ export function jsx(type: any, props: any) {
 					element.setAttribute("class", value)
 				}
 			} else if (key == "style") {
-				Object.assign((element as HTMLElement).style, props.style)
+				Object.assign((element as HTMLElement).style, value)
 			} else {
-				const value = props[key]
 				const attribute = isSvg ? key : key.toLowerCase()
 				if (value === true) {
 					element.setAttribute(attribute, "")
@@ -67,7 +66,7 @@ export function jsx(type: any, props: any) {
 					element.removeAttribute(attribute)
 				} else if (typeof value == "string") {
 					element.setAttribute(attribute, value)
-				} else if (value !== undefined) {
+				} else {
 					element.setAttribute(attribute, value.toString())
 				}
 			}
@@ -101,4 +100,4 @@ export function Fragment(props: {children: StagnateNode}) {
 }
 
 export { jsx as jsxs }
-export { JSX }
+export type { JSX }
