@@ -1,36 +1,49 @@
 import { Component } from "./Component"
-import type { JSX, CollectableArray, StagnateNode } from "./types"
+import type { JSX, CollectableArray, StagnateNode, CollectableValue } from "./types"
 
-function _collect<T>(data: CollectableArray<T>, accumulator: T[]) {
+function collectArray<T>(data: CollectableArray<T>, accumulator: T[]) {
 	for (let i = 0; i < data.length; i += 1) {
 		const value = data[i]
 		if (Array.isArray(value)) {
-			_collect(value, accumulator)
+			collectArray(value, accumulator)
 		} else if (value) {
 			accumulator.push(value)
 		}
 	}
 }
 
-function collect<T>(data: CollectableArray<T> | T) {
+function collectString(data: CollectableValue<string> | string, delimiter: string) {
 	if (Array.isArray(data)) {
-		const accumulator = [] as T[]
-		 _collect(data, accumulator)
-		return accumulator
+		const accumulator = [] as string[]
+		collectArray(data, accumulator)
+		return accumulator.join(delimiter)
 	}
-	return data ? [data] : []
+	return data || ""
+}
+
+function collectNodes(data: CollectableValue<Node | string>, parent: Node) {
+	if (Array.isArray(data)) {
+		for (let i = 0; i < data.length; i += 1) {
+			const value = data[i]
+			if (Array.isArray(value)) {
+				collectNodes(value, parent)
+			} else if (value) {
+				parent.appendChild(value instanceof Node ? value : document.createTextNode(value))
+			}
+		}
+	} else if (data) {
+		parent.appendChild(data instanceof Node ? data : document.createTextNode(data))
+	}
 }
 
 export function jsx(type: any, props: any) {
 	if (type == "text") {
-		const children = collect<string>(props.children)
-		const element = document.createTextNode(children.length ? children.join("") : (props.value || ""))
+		const element = document.createTextNode(collectString(props.children, ""))
 		if (props.ref) {
 			props.ref(element)
 		}
 		return element
 	} else if (typeof type == "string") {
-		const children = collect<Element | string>(props.children)
 		let element: Element
 		let isSvg = false
 		if (type.startsWith("svg")) {
@@ -41,8 +54,10 @@ export function jsx(type: any, props: any) {
 		}
 		for (const key in props) {
 			let value = props[key]
-			if (key == "children" || value === undefined) {
-				continue
+			if (value === undefined) {
+				// no-op
+			} else if (key == "children") {
+				collectNodes(value as StagnateNode, element)
 			} else if (key.startsWith("on")) {
 				element.addEventListener(key.slice(2).toLowerCase(), value)
 			} else if (key == "innerHTML") {
@@ -50,9 +65,7 @@ export function jsx(type: any, props: any) {
 			} else if (key == "ref") {
 				value(element)
 			} else if (key == "class") {
-				if (Array.isArray(value)) {
-					value = collect(value).join(" ")
-				}
+				value = collectString(value, " ")
 				if (value) {
 					element.setAttribute("class", value)
 				}
@@ -71,7 +84,6 @@ export function jsx(type: any, props: any) {
 				}
 			}
 		}
-		children.forEach(x => element.appendChild(x instanceof Node ? x : document.createTextNode(x.toString())))
 		return element
 	} else if (type.prototype instanceof Component) {
 		const component = new type(props) as Component
@@ -96,7 +108,9 @@ export function createElement(type: any, props: any, ...children: any[]) {
 
 /** JSX fragment component, <> can be used as an alias */
 export function Fragment(props: {children: StagnateNode}) {
-	return props.children as JSX.Element
+	const fragment = document.createDocumentFragment()
+	collectNodes(props.children, fragment)
+	return fragment
 }
 
 export { jsx as jsxs }

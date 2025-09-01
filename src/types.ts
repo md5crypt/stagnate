@@ -181,7 +181,6 @@ export interface HTMLElementAttributes<T> extends GlobalAttributes<T> {
 }
 
 export interface TextElementAttributes {
-	value?: string
 	ref?: (value: Text) => void
 	children?: CollectableValue<string>
 }
@@ -203,7 +202,7 @@ export interface ImageElementAttributes extends GlobalAttributes<HTMLImageElemen
 	elementTiming?: string
 }
 
-export interface AnchorElementAttributes extends GlobalAttributes<HTMLAnchorElement> {
+export interface AnchorElementAttributes extends HTMLElementAttributes<HTMLAnchorElement> {
 	href?: string
 	target?: LinkTarget
 	rel?: string
@@ -212,7 +211,6 @@ export interface AnchorElementAttributes extends GlobalAttributes<HTMLAnchorElem
 	download?: boolean | string
 	ping?: string
 	type?: string
-	children?: CollectableValue<JSX.Element | string>
 }
 
 export interface InputElementAttributes extends GlobalAttributes<HTMLInputElement>, FormSubmitterAttributes {
@@ -285,6 +283,7 @@ export interface TextAreaElementAttributes extends GlobalAttributes<HTMLTextArea
 	wrap?: "hard" | "soft" | "off"
 	dirName?: string
 	form?: string
+	children?: CollectableValue<string>
 }
 
 export interface SelectElementAttributes extends GlobalAttributes<HTMLSelectElement> {
@@ -297,7 +296,7 @@ export interface SelectElementAttributes extends GlobalAttributes<HTMLSelectElem
 	size?: number
 	autocomplete?: string
 	value?: string | number | string[]
-	children?: CollectableValue<JSX.Element | string>
+	children?: CollectableValue<JSX.Element>
 }
 
 export interface OptionElementAttributes extends GlobalAttributes<HTMLOptionElement> {
@@ -311,14 +310,15 @@ export interface OptionElementAttributes extends GlobalAttributes<HTMLOptionElem
 export interface OptGroupElementAttributes extends GlobalAttributes<HTMLOptGroupElement> {
 	disabled?: boolean
 	label?: string
+	children?: CollectableValue<JSX.Element>
 }
 
-export interface LabelElementAttributes extends GlobalAttributes<HTMLLabelElement> {
+export interface LabelElementAttributes extends HTMLElementAttributes<HTMLLabelElement> {
 	for?: string
 	form?: string
 }
 
-export interface ButtonElementAttributes extends GlobalAttributes<HTMLButtonElement>, FormSubmitterAttributes {
+export interface ButtonElementAttributes extends HTMLElementAttributes<HTMLButtonElement>, FormSubmitterAttributes {
 	autoFocus?: boolean
 	disabled?: boolean
 	name?: string
@@ -328,25 +328,25 @@ export interface ButtonElementAttributes extends GlobalAttributes<HTMLButtonElem
 	popoverTargetAction?: "toggle" | "show" | "hide"
 }
 
-export interface FieldsetElementAttributes extends GlobalAttributes<HTMLFieldSetElement> {
+export interface FieldsetElementAttributes extends HTMLElementAttributes<HTMLFieldSetElement> {
 	disabled?: boolean
 	form?: string
 	name?: string
 }
 
-export interface OutputElementAttributes extends GlobalAttributes<HTMLOutputElement> {
+export interface OutputElementAttributes extends HTMLElementAttributes<HTMLOutputElement> {
 	for?: string
 	form?: string
 	name?: string
 	value?: string
 }
 
-export interface ProgressElementAttributes extends GlobalAttributes<HTMLProgressElement> {
+export interface ProgressElementAttributes extends HTMLElementAttributes<HTMLProgressElement> {
 	max?: number
 	value?: number
 }
 
-export interface MeterElementAttributes extends GlobalAttributes<HTMLMeterElement> {
+export interface MeterElementAttributes extends HTMLElementAttributes<HTMLMeterElement> {
 	value?: number
 	min?: number
 	max?: number
@@ -356,7 +356,7 @@ export interface MeterElementAttributes extends GlobalAttributes<HTMLMeterElemen
 	form?: string
 }
 
-export interface FormElementAttributes extends GlobalAttributes<HTMLFormElement> {
+export interface FormElementAttributes extends HTMLElementAttributes<HTMLFormElement> {
 	acceptCharset?: string
 	action?: string
 	autocomplete?: "on" | "off" | string
@@ -366,7 +366,6 @@ export interface FormElementAttributes extends GlobalAttributes<HTMLFormElement>
 	noValidate?: boolean
 	rel?: string
 	target?: LinkTarget
-	children?: CollectableValue<JSX.Element | string>
 }
 
 export interface IframeElementAttributes extends GlobalAttributes<HTMLIFrameElement> {
@@ -380,17 +379,17 @@ export interface IframeElementAttributes extends GlobalAttributes<HTMLIFrameElem
 	loading?: "eager" | "lazy"
 	width?: number | string
 	height?: number | string
+	children?: CollectableValue<string>
 }
 
-export interface SvgElementAttributes extends GlobalAttributes<SVGElement> {
+export interface SvgElementAttributes extends HTMLElementAttributes<SVGElement> {
 	viewBox?: string
 	fill?: string
 	width?: number | string
 	height?: number | string
-	children?: CollectableValue<JSX.Element | string>
 }
 
-export interface AudioElementAttributes extends GlobalAttributes<HTMLAudioElement> {
+export interface AudioElementAttributes extends HTMLElementAttributes<HTMLAudioElement> {
 	src?: string
 	autoPlay?: boolean
 	controls?: boolean
@@ -401,7 +400,7 @@ export interface AudioElementAttributes extends GlobalAttributes<HTMLAudioElemen
 	controlsList?: string
 }
 
-export interface VideoElementAttributes extends GlobalAttributes<HTMLVideoElement> {
+export interface VideoElementAttributes extends HTMLElementAttributes<HTMLVideoElement> {
 	src?: string
 	autoPlay?: boolean
 	controls?: boolean
@@ -432,12 +431,12 @@ export interface TrackElementAttributes extends GlobalAttributes<HTMLTrackElemen
 	srcLang?: string
 }
 
-export interface CanvasElementAttributes extends GlobalAttributes<HTMLCanvasElement> {
+export interface CanvasElementAttributes extends HTMLElementAttributes<HTMLCanvasElement> {
 	width?: string | number
 	height?: string | number
 }
 
-export interface MapElementAttributes extends GlobalAttributes<HTMLMapElement> {
+export interface MapElementAttributes extends HTMLElementAttributes<HTMLMapElement> {
 	name?: string
 }
 
@@ -453,7 +452,7 @@ export interface AreaElementAttributes extends GlobalAttributes<HTMLAreaElement>
 	target?: LinkTarget
 }
 
-export interface ColGroupElementAttributes extends GlobalAttributes<HTMLTableColElement> {
+export interface ColGroupElementAttributes extends HTMLElementAttributes<HTMLTableColElement> {
 	span?: number
 }
 
@@ -461,7 +460,7 @@ export interface ColElementAttributes extends GlobalAttributes<HTMLTableColEleme
 	span?: number
 }
 
-export interface ThElementAttributes extends GlobalAttributes<HTMLTableCellElement> {
+export interface ThElementAttributes extends HTMLElementAttributes<HTMLTableCellElement> {
 	abbr?: string
 	colSpan?: number
 	rowSpan?: number
@@ -469,43 +468,43 @@ export interface ThElementAttributes extends GlobalAttributes<HTMLTableCellEleme
 	scope?: "row" | "col" | "rowgroup" | "colgroup" | "auto"
 }
 
-export interface TdElementAttributes extends GlobalAttributes<HTMLTableCellElement> {
+export interface TdElementAttributes extends HTMLElementAttributes<HTMLTableCellElement> {
 	colSpan?: number
 	rowSpan?: number
 	headers?: string
 }
 
-export interface OlElementAttributes extends GlobalAttributes<HTMLOListElement> {
+export interface OlElementAttributes extends HTMLElementAttributes<HTMLOListElement> {
 	reversed?: boolean
 	start?: number
 	type?: "1" | "a" | "A" | "i" | "I"
 }
 
-export interface LiElementAttributes extends GlobalAttributes<HTMLLIElement> {
+export interface LiElementAttributes extends HTMLElementAttributes<HTMLLIElement> {
 	value?: number
 }
 
-export interface BlockquoteElementAttributes extends GlobalAttributes<HTMLQuoteElement> {
+export interface BlockquoteElementAttributes extends HTMLElementAttributes<HTMLQuoteElement> {
 	cite?: string
 }
 
-export interface QElementAttributes extends GlobalAttributes<HTMLQuoteElement> {
+export interface QElementAttributes extends HTMLElementAttributes<HTMLQuoteElement> {
 	cite?: string
 }
 
-export interface DataElementAttributes extends GlobalAttributes<HTMLDataElement> {
+export interface DataElementAttributes extends HTMLElementAttributes<HTMLDataElement> {
 	value?: string | number
 }
 
-export interface TimeElementAttributes extends GlobalAttributes<HTMLTimeElement> {
+export interface TimeElementAttributes extends HTMLElementAttributes<HTMLTimeElement> {
 	dateTime?: string
 }
 
-export interface DetailsElementAttributes extends GlobalAttributes<HTMLDetailsElement> {
+export interface DetailsElementAttributes extends HTMLElementAttributes<HTMLDetailsElement> {
 	open?: boolean
 }
 
-export interface DialogElementAttributes extends GlobalAttributes<HTMLDialogElement> {
+export interface DialogElementAttributes extends HTMLElementAttributes<HTMLDialogElement> {
 	open?: boolean
 }
 
@@ -550,15 +549,17 @@ export interface ScriptElementAttributes extends GlobalAttributes<HTMLScriptElem
 	type?: string
 	noModule?: boolean
 	blocking?: "render"
+	children?: CollectableValue<string>
 }
 
 export interface StyleElementAttributes extends GlobalAttributes<HTMLStyleElement> {
 	media?: string
 	nonce?: string
 	blocking?: "render"
+	children?: CollectableValue<string>
 }
 
-export interface ObjectElementAttributes extends GlobalAttributes<HTMLObjectElement> {
+export interface ObjectElementAttributes extends HTMLElementAttributes<HTMLObjectElement> {
 	data?: string
 	type?: string
 	name?: string
@@ -576,15 +577,15 @@ export interface EmbedElementAttributes extends GlobalAttributes<HTMLEmbedElemen
 	height?: number | string
 }
 
-export interface SlotElementAttributes extends GlobalAttributes<HTMLSlotElement> {
+export interface SlotElementAttributes extends HTMLElementAttributes<HTMLSlotElement> {
 	name?: string
 }
 
-export interface TableElementAttributes extends GlobalAttributes<HTMLTableElement> {
+export interface TableElementAttributes extends HTMLElementAttributes<HTMLTableElement> {
 	sortable?: boolean
 }
 
-export interface InsDelElementAttributes extends GlobalAttributes<HTMLModElement> {
+export interface InsDelElementAttributes extends HTMLElementAttributes<HTMLModElement> {
 	cite?: string
 	dateTime?: string
 }
@@ -730,9 +731,9 @@ export namespace JSX {
 	export interface ElementChildrenAttribute {
 		children: {}
 	}
-	export interface Element extends globalThis.Element {}
+	export interface Element extends Node {}
 	export interface ElementClass {
-		htmlRoot: Element | null
+		htmlRoot: globalThis.Element | null
 	}
 	export interface IntrinsicClassAttributes<T> {
 		ref?: (value: T) => void

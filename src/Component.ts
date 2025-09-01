@@ -5,11 +5,11 @@
  * @typeParam PROPS - interface describing jsx props passed to this component
  * @typeParam ROOT - type of the html root element
  */
-export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | HTMLElement = SVGElement | HTMLElement > {
+export class Component<REFS = {}, PROPS = undefined, ROOT extends Element = SVGElement | HTMLElement > {
 	/** properties received from jsx (or set via constructor) */
 	public readonly props: PROPS extends undefined ? {} : PROPS
 
-	private _components: Component<any, any, any>[]
+	private _components: Component<any, any, Element>[]
 	private _attached: boolean
 
 	/** html root element, only accessible after {@link build} was called */
@@ -19,7 +19,7 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 	 * parent component, only accessible after {@link bind} was called
 	 * for self-bound components `this.parent = this`
 	 */
-	protected parent!: Component<any, any>
+	protected parent!: Component<any, any, Element>
 
 	/**
 	 * jsx references stored on this component,
@@ -65,7 +65,7 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 	 * component render function, should return the component JSX
 	 * if null is returned {@link build} call will fail with an exception
 	 */
-	protected render(): Element | null {
+	protected render(): Node | null {
 		return null
 	}
 
@@ -148,7 +148,7 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 	 * a component can be self-bound by passing itself as parent (`x.bind(x)`),
 	 * self-bound components get automatically attached
 	 */
-	public bind(parent: Component<any, any>) {
+	public bind(parent: Component<any, any, Element>) {
 		this.parent = parent
 		if (parent != this) {
 			parent._components.push(this)
@@ -169,14 +169,14 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 	 * @param target - DOM element to add the component to, if unset or null `parent.root` is used, if a component is passed it's root will be used
 	 * @param before - add the element before the given DOM child, a number can be used as a child index, if unset adds the element as the last child
 	 */
-	public create(parent: Component<any, any>, target?: Element | Component<any, any> | null, before?: Element | Component<any, any> | number) {
+	public create(parent: Component<any, any, Element>, target?: Node | Component<any, any, Element> | null, before?: Node | Component<any, any, Element> | number) {
 		if (!target) {
 			target = parent.root
 		} else if (target instanceof Component) {
 			target = target.root
 		}
 		if (typeof before === "number") {
-			before = before < target.children.length ? target.children[Math.max(0, before)] : undefined
+			before = before < target.childNodes.length ? target.childNodes[Math.max(0, before)] : undefined
 		} else if (before instanceof Component) {
 			before = before.root
 		}
@@ -192,7 +192,7 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 	 * @param parent - parent component
 	 * @param target - component or DOM element to replace, if component is passed {@link destroy} will be called on it
 	 */
-	public replace(parent: Component<any, any>, target: Element | Component<any, any>) {
+	public replace(parent: Component<any, any, Element>, target: Element | Component<any, any, Element>) {
 		if (target instanceof Component) {
 			target.root.replaceWith(this.build())
 			target.destroy()
@@ -239,7 +239,7 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends SVGElement | H
 	}
 
 	/** child component list accessor */
-	public get components(): Readonly<Component<any, any, any>[]> {
+	public get components(): Readonly<Component<any, any, Element>[]> {
 		return this._components
 	}
 }
