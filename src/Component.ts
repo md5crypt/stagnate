@@ -52,13 +52,13 @@ export class Component<REFS = {}, PROPS = undefined, ROOT extends Element = SVGE
 	}
 
 	private detach() {
+		this.onDetach()
 		this._components.forEach(x => x.detach())
 		this._components = []
 		this._attached = false
 		this.refs = {} as REFS
 		this.parent = null as any
 		this.root = null as any
-		this.onDetach()
 	}
 
 	/**
