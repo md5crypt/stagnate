@@ -70,7 +70,17 @@ export function jsx(type: any, props: any) {
 					element.setAttribute("class", value)
 				}
 			} else if (key == "style") {
-				Object.assign((element as HTMLElement).style, value)
+				const style = (element as HTMLElement).style
+				for (const key in value) {
+					const propValue = value[key]
+					if (propValue === undefined) {
+						// no-op
+					} else if (key.length > 1 && key[0] == "-" && key[1] == "-") {
+						style.setProperty(key, propValue)
+					} else {
+						style[key as any] = propValue
+					}
+				}
 			} else {
 				const attribute = isSvg ? key : key.toLowerCase()
 				if (value === true) {

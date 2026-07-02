@@ -121,11 +121,20 @@ export interface EventHandlers {
 	onToggle?: (ev: Event) => void
 }
 
+/** the JSX element css class attribute */
+export type ClassAttribute = CollectableValue<string>
+
+/**
+ * the JSX element css style attribute
+ * setting css vars is supported via passing "--var-name" keys
+ */
+export type StyleAttribute = Partial<CSSStyleDeclaration> & {[key: `--${string}`]: string | undefined}
+
 export interface GlobalAttributes<T> extends EventHandlers {
 	ref?: (value: T) => void
 	id?: string
-	class?: CollectableValue<string>
-	style?: Partial<CSSStyleDeclaration>
+	class?: ClassAttribute
+	style?: StyleAttribute
 	title?: string
 	tabIndex?: number
 	innerHTML?: string
@@ -751,6 +760,3 @@ export type ComponentProps<T extends keyof JSX.IntrinsicElements | {props: any} 
 
 /** any value that can be used in JSX */
 export type StagnateNode = CollectableValue<JSX.Element | string>
-
-/** the JSX element css class attribute */
-export type ClassAttribute = CollectableValue<string>

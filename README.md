@@ -304,6 +304,12 @@ type StagnateNode
 
 /** the JSX element css class attribute */
 type ClassAttribute
+
+/**
+ * the JSX element css style attribute
+ * setting css vars is supported via passing "--var-name" keys
+ */
+type StyleAttribute
 ```
 
 ### Other exports
